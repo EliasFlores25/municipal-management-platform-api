@@ -7,13 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Dto\" />
-    <Folder Include="UseCase\Document\" />
-    <Folder Include="UseCase\DocumentType\" />
-    <Folder Include="UseCase\Municipality\" />
-    <Folder Include="UseCase\Project\" />
-    <Folder Include="UseCase\Position\" />
-    <Folder Include="UseCase\Notice\" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
 </Project>
