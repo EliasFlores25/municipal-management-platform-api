@@ -3,7 +3,7 @@ using Domain;
 using Domain.Abstractions;
 using static Application.DTOs.RoleDtos;
 
-namespace Application.UseCase
+namespace Application.UseCase.Roles
 {
     public class CreateRoleUseCase
     {
