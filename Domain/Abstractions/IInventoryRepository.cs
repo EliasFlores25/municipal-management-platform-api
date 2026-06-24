@@ -8,5 +8,6 @@ namespace Domain.Abstractions
         Task<IEnumerable<Inventory>> GetByMunicipalityAsync(int municipalityId);
         Task<IEnumerable<Inventory>> GetByStatusAsync(InventoryStatus status);
         Task<IEnumerable<Inventory>> GetLowStockItemsAsync(int thresholdQuantity);
+        Task<IEnumerable<Inventory>> GetAllOrderedByItemNameAsync();
     }
 }
