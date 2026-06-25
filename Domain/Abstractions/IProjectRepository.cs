@@ -8,5 +8,6 @@ namespace Domain.Abstractions
         Task<IEnumerable<Project>> GetByMunicipalityAndStatusAsync(int municipalityId, ProjectStatus state);
         Task<IEnumerable<Project>> GetProjectsWithHighBudgetAsync(decimal minBudget);
         Task<IEnumerable<Project>> GetOverdueProjectsAsync(DateTime referenceDate);
+        Task<IEnumerable<Project>> GetAllOrderByNameAsync();
     }
 }
