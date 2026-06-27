@@ -29,7 +29,7 @@ public class Notice
         Category = category;
         MunicipalityId = municipalityId;
         RegistrationDate = registrationDate ?? DateTime.UtcNow;
-        IsArchived = false; // Nace visible/activo para la comunidad
+        IsArchived = false;
     }
 
     public void UpdateContent(string title, string description, NoticeCategory category)

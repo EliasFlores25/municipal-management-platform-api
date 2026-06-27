@@ -8,5 +8,6 @@ namespace Domain.Abstractions
         Task<IEnumerable<Notice>> GetByCategoryAsync(NoticeCategory category);
         Task<IEnumerable<Notice>> GetActiveByCategoryAsync(NoticeCategory category);
         Task<IEnumerable<Notice>> GetByRegistrationDateRangeAsync(DateTime startDate, DateTime endDate);
+        Task<IEnumerable<Notice>> GetAllAsync();
     }
 }
