@@ -8,5 +8,6 @@ namespace Domain.Abstractions
         Task<IEnumerable<Problem>> GetByMunicipalityAndStatusAsync(int municipalityId, ProblemStatus status);
         Task<IEnumerable<Problem>> GetBySeverityAndStatusAsync(ProblemSeverity severity, ProblemStatus status);
         Task<IEnumerable<Problem>> GetByRegistrationDateRangeAsync(DateTime startDate, DateTime endDate);
+        Task<IEnumerable<Problem>> GetAllAsync();
     }
 }
