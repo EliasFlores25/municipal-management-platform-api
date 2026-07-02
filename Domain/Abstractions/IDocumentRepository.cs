@@ -9,5 +9,6 @@ namespace Domain.Abstractions
         Task<IEnumerable<Document>> GetByMunicipalityAndStatusAsync(int municipalityId, DocumentStatus status);
         Task<IEnumerable<Document>> GetByDocumentTypeAsync(int documentTypeId);
         Task<IEnumerable<Document>> GetByEmissionDateRangeAsync(DateTime startDate, DateTime endDate);
+        Task<IEnumerable<Document>> GetAllAsync();
     }
 }
