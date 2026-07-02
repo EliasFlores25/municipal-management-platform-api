@@ -9,5 +9,6 @@ namespace Domain.Abstractions
         Task<IEnumerable<Employee>> GetByStatusAsync(EmployeeStatus status);
         Task<IEnumerable<Employee>> GetByPositionAsync(int positionId);
         Task<IEnumerable<Employee>> GetByMunicipalityAsync(int municipalityId);
+        Task<IEnumerable<Employee>> GetAllAsync();
     }
 }
