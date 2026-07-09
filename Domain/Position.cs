@@ -45,6 +45,6 @@ public class Position
 
         var trimmed = description.Trim();
         if (trimmed.Length is < 25 or > 200)
-            throw new DomainException("La descripción del cargo debe tener entre 25 y 200 caracteres."); // TEXTO CORREGIDO
+            throw new DomainException("La descripción del cargo debe tener entre 25 y 200 caracteres.");
     }
 }
