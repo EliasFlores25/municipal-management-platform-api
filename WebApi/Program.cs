@@ -1,7 +1,11 @@
 using Application.UseCase.Roles;
 using Application.UseCases.DocumentTypes;
+using Application.UseCases.Inventories;
 using Application.UseCases.Municipalities;
+using Application.UseCases.Notices;
 using Application.UseCases.Positions;
+using Application.UseCases.Problems;
+using Application.UseCases.Projects;
 using Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +40,28 @@ builder.Services.AddScoped<DeleteDocumentTypeUseCase>();
 builder.Services.AddScoped<GetAllDocumentTypesOrderedByNameUseCase>();
 builder.Services.AddScoped<GetDocumentTypeByIdUseCase>();
 builder.Services.AddScoped<UpdateDocumentTypeUseCase>();
+
+builder.Services.AddScoped<CreateInventoryUseCase>();
+builder.Services.AddScoped<DecreaseInventoryStockUseCase>();
+builder.Services.AddScoped<FlagInventoryAsBajaUseCase>();
+builder.Services.AddScoped<GetInventoryQueriesUseCase>();
+builder.Services.AddScoped<IncreaseInventoryStockUseCase>();
+builder.Services.AddScoped<UpdateInventoryInfoUseCase>();
+
+builder.Services.AddScoped<ChangeProjectStatusUseCase>();
+builder.Services.AddScoped<CreateProjectUseCase>();
+builder.Services.AddScoped<GetProjectQueriesUseCase>();
+builder.Services.AddScoped<UpdateProjectPlanningUseCase>();
+
+builder.Services.AddScoped<ArchiveNoticeUseCase>();
+builder.Services.AddScoped<CreateNoticeUseCase>();
+builder.Services.AddScoped<GetNoticeQueriesUseCase>();
+builder.Services.AddScoped<UpdateNoticeContentUseCase>();
+
+builder.Services.AddScoped<ChangeProblemStatusUseCase>();
+builder.Services.AddScoped<CreateProblemUseCase>();
+builder.Services.AddScoped<GetProblemQueriesUseCase>();
+builder.Services.AddScoped<UpdateProblemReportUseCase>();
 
 var app = builder.Build();
 
