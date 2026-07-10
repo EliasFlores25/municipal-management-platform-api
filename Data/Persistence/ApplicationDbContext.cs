@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Persistence
@@ -11,6 +12,11 @@ namespace Data.Persistence
         public DbSet<Municipality> Municipalities { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<DocumentType> DocumentTypes { get; set; }
+        public DbSet<Inventory> Inventories { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Notice> Notices { get; set; }
+        public DbSet<Problem> Problems { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -86,6 +92,185 @@ namespace Data.Persistence
                 entity.HasIndex(d => d.Name)
                       .IsUnique()
                       .HasDatabaseName("UQ_DocumentTypes_Name");
+            });
+            modelBuilder.Entity<Inventory>(entity =>
+            {
+                entity.ToTable("Inventories");
+
+                entity.HasKey(i => i.Id);
+                entity.Property(i => i.Id)
+                      .UseIdentityColumn();
+
+                entity.Property(i => i.ItemName)
+                      .IsRequired()
+                      .HasMaxLength(50)
+                      .HasColumnType("nvarchar(50)");
+
+                entity.Property(i => i.Description)
+                      .IsRequired()
+                      .HasMaxLength(100)
+                      .HasColumnType("nvarchar(100)");
+
+                entity.Property(i => i.Quantity)
+                      .IsRequired();
+
+                entity.Property(i => i.EntryDate)
+                      .IsRequired();
+
+                entity.Property(i => i.ImageUrl)
+                      .IsRequired()
+                      .HasMaxLength(250)
+                      .HasColumnType("varchar(250)");
+
+                entity.Property(i => i.State)
+                      .IsRequired()
+                      .HasConversion(
+                          s => s.ToString(),
+                          s => (InventoryStatus)Enum.Parse(typeof(InventoryStatus), s))
+                      .HasMaxLength(20)
+                      .HasColumnType("varchar(20)");
+
+                entity.HasOne(i => i.Municipality)
+                      .WithMany()
+                      .HasForeignKey(i => i.MunicipalityId)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("FK_Inventory_Municipalities_MunicipalityId");
+            });
+            modelBuilder.Entity<Project>(entity =>
+            {
+                entity.ToTable("Projects");
+
+                entity.HasKey(p => p.Id);
+                entity.Property(p => p.Id)
+                      .UseIdentityColumn();
+
+                entity.Property(p => p.Name)
+                      .IsRequired()
+                      .HasMaxLength(50)
+                      .HasColumnType("nvarchar(50)");
+
+                entity.Property(p => p.Description)
+                      .IsRequired()
+                      .HasMaxLength(200)
+                      .HasColumnType("nvarchar(200)");
+
+                entity.Property(p => p.StartDate)
+                      .IsRequired()
+                      .HasColumnType("datetime2");
+
+                entity.Property(p => p.EndDate)
+                      .IsRequired()
+                      .HasColumnType("datetime2");
+
+                entity.Property(p => p.Budget)
+                      .IsRequired()
+                      .HasPrecision(18, 2);
+
+                entity.Property(p => p.State)
+                      .IsRequired()
+                      .HasConversion(
+                          s => s.ToString(),
+                          s => (ProjectStatus)Enum.Parse(typeof(ProjectStatus), s))
+                      .HasMaxLength(20)
+                      .HasColumnType("varchar(20)");
+
+                entity.HasOne(p => p.Municipality)
+                      .WithMany()
+                      .HasForeignKey(p => p.MunicipalityId)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("FK_Projects_Municipalities_MunicipalityId");
+            });
+            modelBuilder.Entity<Notice>(entity =>
+            {
+                entity.ToTable("Notices");
+
+                entity.HasKey(n => n.Id);
+                entity.Property(n => n.Id)
+                      .UseIdentityColumn();
+
+                entity.Property(n => n.Title)
+                      .IsRequired()
+                      .HasMaxLength(50)
+                      .HasColumnType("varchar(50)");
+
+                entity.Property(n => n.Description)
+                      .IsRequired()
+                      .HasMaxLength(200)
+                      .HasColumnType("nvarchar(200)");
+
+                entity.Property(n => n.RegistrationDate)
+                      .IsRequired()
+                      .HasColumnType("datetime2");
+
+                entity.Property(n => n.IsArchived)
+                      .IsRequired()
+                      .HasDefaultValue(false);
+
+                entity.Property(n => n.Category)
+                      .IsRequired()
+                      .HasConversion(
+                          c => c.ToString(),
+                          c => (NoticeCategory)Enum.Parse(typeof(NoticeCategory), c))
+                      .HasMaxLength(30)
+                      .HasColumnType("varchar(30)");
+
+                entity.HasOne(n => n.Municipality)
+                      .WithMany()
+                      .HasForeignKey(n => n.MunicipalityId)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("FK_Notices_Municipalities_MunicipalityId");
+            });
+            modelBuilder.Entity<Problem>(entity =>
+            {
+                entity.ToTable("Problems");
+
+                entity.HasKey(p => p.Id);
+                entity.Property(p => p.Id)
+                      .UseIdentityColumn();
+
+                entity.Property(p => p.Title)
+                      .IsRequired()
+                      .HasMaxLength(50)
+                      .HasColumnType("nvarchar(50)");
+
+                entity.Property(p => p.Description)
+                      .IsRequired()
+                      .HasMaxLength(200)
+                      .HasColumnType("nvarchar(200)");
+
+                entity.Property(p => p.RegistrationDate)
+                      .IsRequired()
+                      .HasColumnType("datetime2");
+
+                entity.Property(p => p.Type)
+                      .IsRequired()
+                      .HasConversion(
+                          t => t.ToString(),
+                          t => (ProblemType)Enum.Parse(typeof(ProblemType), t))
+                      .HasMaxLength(30)
+                      .HasColumnType("varchar(30)");
+
+                entity.Property(p => p.Severity)
+                      .IsRequired()
+                      .HasConversion(
+                          s => s.ToString(),
+                          s => (ProblemSeverity)Enum.Parse(typeof(ProblemSeverity), s))
+                      .HasMaxLength(20)
+                      .HasColumnType("varchar(20)");
+
+                entity.Property(p => p.Status)
+                      .IsRequired()
+                      .HasConversion(
+                          s => s.ToString(),
+                          s => (ProblemStatus)Enum.Parse(typeof(ProblemStatus), s))
+                      .HasMaxLength(20)
+                      .HasColumnType("varchar(20)");
+
+                entity.HasOne(p => p.Municipality)
+                      .WithMany()
+                      .HasForeignKey(p => p.MunicipalityId)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("FK_Problems_Municipalities_MunicipalityId");
             });
         }
 
