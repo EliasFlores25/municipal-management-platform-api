@@ -16,6 +16,8 @@ namespace Data.Persistence
         public DbSet<Project> Projects { get; set; }
         public DbSet<Notice> Notices { get; set; }
         public DbSet<Problem> Problems { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Employee> Employees { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -271,6 +273,101 @@ namespace Data.Persistence
                       .HasForeignKey(p => p.MunicipalityId)
                       .OnDelete(DeleteBehavior.Restrict)
                       .HasConstraintName("FK_Problems_Municipalities_MunicipalityId");
+            });
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("Users");
+
+                entity.HasKey(u => u.Id);
+                entity.Property(u => u.Id)
+                      .UseIdentityColumn();
+
+                entity.Property(u => u.Name)
+                      .IsRequired()
+                      .HasMaxLength(50)
+                      .HasColumnType("nvarchar(50)");
+
+                entity.Property(u => u.Email)
+                      .IsRequired()
+                      .HasMaxLength(100)
+                      .HasColumnType("varchar(100)");
+
+                entity.Property(u => u.PasswordHash)
+                      .IsRequired()
+                      .HasMaxLength(255)
+                      .HasColumnType("varchar(255)");
+
+                entity.Property(u => u.IsActive)
+                      .IsRequired()
+                      .HasDefaultValue(true);
+
+                entity.HasIndex(u => u.Email)
+                      .IsUnique()
+                      .HasDatabaseName("UQ_Users_Email");
+
+                entity.HasOne(u => u.Role)
+                      .WithMany()
+                      .HasForeignKey(u => u.RoleId)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("FK_Users_Roles_RoleId");
+            });
+            modelBuilder.Entity<Employee>(entity =>
+            {
+                entity.ToTable("Employees");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                      .UseIdentityColumn();
+
+                entity.Property(e => e.Code)
+                      .IsRequired()
+                      .HasMaxLength(20)
+                      .HasColumnType("varchar(20)");
+
+                entity.Property(e => e.FirstName)
+                      .IsRequired()
+                      .HasMaxLength(50)
+                      .HasColumnType("nvarchar(50)");
+
+                entity.Property(e => e.LastName)
+                      .IsRequired()
+                      .HasMaxLength(50)
+                      .HasColumnType("nvarchar(50)");
+
+                entity.Property(e => e.ContractDate)
+                      .IsRequired()
+                      .HasColumnType("datetime2");
+
+                entity.Property(e => e.ExitDate)
+                      .IsRequired(false)
+                      .HasColumnType("datetime2");
+
+                entity.Property(e => e.State)
+                      .IsRequired()
+                      .HasConversion(
+                          s => s.ToString(),
+                          s => (EmployeeStatus)Enum.Parse(typeof(EmployeeStatus), s))
+                      .HasMaxLength(20)
+                      .HasColumnType("varchar(20)");
+
+                entity.Ignore(e => e.ContractDuration);
+                entity.Ignore(e => e.FullName);
+
+                entity.HasIndex(e => e.Code)
+                      .IsUnique()
+                      .HasDatabaseName("UQ_Employees_Code");
+
+                entity.HasOne(e => e.Position)
+                      .WithMany()
+                      .HasForeignKey(e => e.PositionId)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("FK_Employees_Positions_PositionId");
+
+                entity.HasOne(e => e.Municipality)
+                      .WithMany()
+                      .HasForeignKey(e => e.MunicipalityId)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("FK_Employees_Municipalities_MunicipalityId");
             });
         }
 
