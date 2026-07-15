@@ -1,11 +1,18 @@
-using Application.UseCase.Roles;
+using Application.UseCases.Municipalities;
 using Application.UseCases.DocumentTypes;
 using Application.UseCases.Inventories;
-using Application.UseCases.Municipalities;
-using Application.UseCases.Notices;
+using Application.UseCases.Employees;
 using Application.UseCases.Positions;
 using Application.UseCases.Problems;
 using Application.UseCases.Projects;
+using Application.UseCases.Notices;
+using Application.UseCases.Users;
+using Application.UseCase.Roles;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Infrastructure;
+using System.Text;
 using Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +24,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing. Please check your appsettings.json.");
 
 builder.Services.AddData(connectionString);
+
+builder.Services.AddInfrastructureServices();
 
 builder.Services.AddScoped<CreateRoleUseCase>();
 builder.Services.AddScoped<GetAllRolesOrderedByNameUseCase>();
@@ -63,6 +72,66 @@ builder.Services.AddScoped<CreateProblemUseCase>();
 builder.Services.AddScoped<GetProblemQueriesUseCase>();
 builder.Services.AddScoped<UpdateProblemReportUseCase>();
 
+builder.Services.AddScoped<ChangeUserPasswordUseCase>();
+builder.Services.AddScoped<CreateUserUseCase>();
+builder.Services.AddScoped<GetUserQueriesUseCase>();
+builder.Services.AddScoped<LoginUseCase>();
+builder.Services.AddScoped<UpdateUserProfileUseCase>();
+builder.Services.AddScoped<UserStatusManagementUseCase>();
+
+builder.Services.AddScoped<CreateEmployeeUseCase>();
+builder.Services.AddScoped<EmployeeLifecycleUseCase>();
+builder.Services.AddScoped<GetEmployeeQueriesUseCase>();
+builder.Services.AddScoped<UpdateEmployeeProfileUseCase>();
+
+var jwtSection = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSection["SecretKey"]
+    ?? throw new InvalidOperationException("La clave secreta de JWT no está configurada.");
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = jwtSection["Issuer"],
+            ValidAudience = jwtSection["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+        };
+    });
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Alcaldia Management API", Version = "v1" });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Ingrese 'Bearer' seguido de un espacio y su token JWT. Ejemplo: 'Bearer eyJhbGciOi...'",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -70,8 +139,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
-
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();
