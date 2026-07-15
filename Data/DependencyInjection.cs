@@ -31,6 +31,8 @@ namespace Data
             services.AddScoped<INoticeRepository, NoticeRepository>();
             services.AddScoped<IProblemRepository, ProblemRepository>();
 
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
             return services;
         }
