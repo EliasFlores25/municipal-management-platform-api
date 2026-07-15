@@ -34,6 +34,7 @@ namespace Data
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
+            services.AddScoped<IDocumentRepository, DocumentRepository>();
             return services;
         }
     }
