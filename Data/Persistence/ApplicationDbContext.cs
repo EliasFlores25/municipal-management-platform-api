@@ -18,6 +18,7 @@ namespace Data.Persistence
         public DbSet<Problem> Problems { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Document> Documents { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -368,6 +369,57 @@ namespace Data.Persistence
                       .HasForeignKey(e => e.MunicipalityId)
                       .OnDelete(DeleteBehavior.Restrict)
                       .HasConstraintName("FK_Employees_Municipalities_MunicipalityId");
+            });
+            modelBuilder.Entity<Document>(entity =>
+            {
+                entity.ToTable("Documents");
+
+                entity.HasKey(d => d.Id);
+                entity.Property(d => d.Id)
+                      .UseIdentityColumn();
+
+                entity.Property(d => d.DocumentNumber)
+                      .IsRequired()
+                      .HasMaxLength(20)
+                      .HasColumnType("varchar(20)");
+
+                entity.Property(d => d.EmissionDate)
+                      .IsRequired()
+                      .HasColumnType("datetime2");
+
+                entity.Property(d => d.Proprietary)
+                      .IsRequired()
+                      .HasMaxLength(50)
+                      .HasColumnType("nvarchar(50)");
+
+                entity.Property(d => d.Details)
+                      .IsRequired()
+                      .HasMaxLength(100)
+                      .HasColumnType("nvarchar(100)");
+
+                entity.Property(d => d.State)
+                      .IsRequired()
+                      .HasConversion(
+                          s => s.ToString(),
+                          s => (DocumentStatus)Enum.Parse(typeof(DocumentStatus), s))
+                      .HasMaxLength(20)
+                      .HasColumnType("varchar(20)");
+
+                entity.HasIndex(d => d.DocumentNumber)
+                      .IsUnique()
+                      .HasDatabaseName("UQ_Documents_DocumentNumber");
+
+                entity.HasOne(d => d.DocumentType)
+                      .WithMany()
+                      .HasForeignKey(d => d.DocumentTypeId)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("FK_Documents_DocumentTypes_DocumentTypeId");
+
+                entity.HasOne(d => d.Municipality)
+                      .WithMany()
+                      .HasForeignKey(d => d.MunicipalityId)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("FK_Documents_Municipalities_MunicipalityId");
             });
         }
 
