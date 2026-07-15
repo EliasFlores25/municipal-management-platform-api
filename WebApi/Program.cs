@@ -14,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using Infrastructure;
 using System.Text;
 using Data;
+using Application.UseCases.Documents;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,6 +84,11 @@ builder.Services.AddScoped<CreateEmployeeUseCase>();
 builder.Services.AddScoped<EmployeeLifecycleUseCase>();
 builder.Services.AddScoped<GetEmployeeQueriesUseCase>();
 builder.Services.AddScoped<UpdateEmployeeProfileUseCase>();
+
+builder.Services.AddScoped<AnularDocumentUseCase>();
+builder.Services.AddScoped<CreateDocumentUseCase>();
+builder.Services.AddScoped<GetDocumentQueriesUseCase>();
+builder.Services.AddScoped<UpdateDocumentDetailsUseCase>();
 
 var jwtSection = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSection["SecretKey"]
