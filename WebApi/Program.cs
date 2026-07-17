@@ -15,11 +15,16 @@ using Infrastructure;
 using System.Text;
 using Data;
 using Application.UseCases.Documents;
+using WebApi.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
+
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing. Please check your appsettings.json.");
@@ -148,4 +153,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapApiEndpoints();
 app.Run();
