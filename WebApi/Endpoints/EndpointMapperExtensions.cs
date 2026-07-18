@@ -9,6 +9,11 @@ namespace WebApi.Endpoints
             app.MapMunicipalitiesEndpoints();
             app.MapPositionsEndpoints();
             app.MapDocumentTypesEndpoints();
+
+            app.MapInventoryEndpoints();
+            app.MapProjectsEndpoints();
+            app.MapNoticesEndpoints();
+            app.MapProblemsEndpoints();
         }
     }
 }
