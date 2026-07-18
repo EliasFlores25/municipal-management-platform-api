@@ -14,6 +14,9 @@ namespace WebApi.Endpoints
             app.MapProjectsEndpoints();
             app.MapNoticesEndpoints();
             app.MapProblemsEndpoints();
+
+            app.MapUsersEndpoints();
+            app.MapEmployeesEndpoints();
         }
     }
 }
