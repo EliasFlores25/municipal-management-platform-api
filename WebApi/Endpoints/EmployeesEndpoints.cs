@@ -1,7 +1,8 @@
 ﻿using Application.Exceptions;
-using Domain.Exceptions;
-using Domain.Enums;
 using Application.UseCases.Employees;
+using Domain.Enums;
+using Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using static Application.DTOs.EmployeeDtos;
@@ -13,7 +14,8 @@ namespace WebApi.Endpoints
         public static void MapEmployeesEndpoints(this IEndpointRouteBuilder app)
         {
             var group = app.MapGroup("/api/employees")
-                .WithTags("Employees");
+                .WithTags("Employees")
+                .RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador,Director de Operaciones,RRHH" });
 
             group.MapGet("/", async Task<Results<Ok<IEnumerable<EmployeeResponse>>, ProblemHttpResult>> (
                 GetEmployeeQueriesUseCase queriesUseCase) =>

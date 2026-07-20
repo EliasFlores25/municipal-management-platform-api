@@ -1,7 +1,8 @@
 ﻿using Application.Exceptions;
-using Domain.Exceptions;
-using Domain.Enums;
 using Application.UseCases.Projects;
+using Domain.Enums;
+using Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using static Application.DTOs.ProjectDtos;
@@ -13,7 +14,8 @@ namespace WebApi.Endpoints
         public static void MapProjectsEndpoints(this IEndpointRouteBuilder app)
         {
             var group = app.MapGroup("/api/projects")
-                .WithTags("Projects");
+                .WithTags("Projects")
+                .RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador,Director de Operaciones,Asistente Operativo" });
 
             group.MapGet("/{id:int}", async Task<Results<Ok<ProjectResponse>, NotFound<object>, ProblemHttpResult>> (
                 int id,

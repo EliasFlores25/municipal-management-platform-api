@@ -1,6 +1,7 @@
 ﻿using Application.Exceptions;
-using Domain.Exceptions;
 using Application.UseCases.Municipalities;
+using Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using static Application.DTOs.MunicipalityDtos;
@@ -12,7 +13,8 @@ namespace WebApi.Endpoints
         public static void MapMunicipalitiesEndpoints(this IEndpointRouteBuilder app)
         {
             var group = app.MapGroup("/api/municipalities")
-                .WithTags("Municipalities");
+                .WithTags("Municipalities")
+                .RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador,Director de Operaciones" });
 
             group.MapGet("/{id:int}", async Task<Results<Ok<MunicipalityResponse>, NotFound<object>, ProblemHttpResult>> (
                 int id,

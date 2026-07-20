@@ -1,6 +1,7 @@
 ﻿using Application.Exceptions;
-using Domain.Exceptions;
 using Application.UseCases.Positions;
+using Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using static Application.DTOs.PositionDtos;
@@ -12,7 +13,8 @@ namespace WebApi.Endpoints
         public static void MapPositionsEndpoints(this IEndpointRouteBuilder app)
         {
             var group = app.MapGroup("/api/positions")
-                .WithTags("Positions");
+                .WithTags("Positions")
+                .RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador,RRHH" });
 
             group.MapGet("/{id:int}", async Task<Results<Ok<PositionResponse>, NotFound<object>, ProblemHttpResult>> (
                 int id,

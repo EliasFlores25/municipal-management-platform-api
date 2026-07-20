@@ -1,6 +1,7 @@
 ﻿using Application.Exceptions;
-using Domain.Exceptions;
 using Application.UseCases.Users;
+using Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using static Application.DTOs.UserDtos;
@@ -13,9 +14,10 @@ namespace WebApi.Endpoints
         {
             var authGroup = app.MapGroup("/api/auth")
                 .WithTags("Authentication");
-
+               
             var userGroup = app.MapGroup("/api/users")
-                .WithTags("Users");
+                .WithTags("Users")
+                 .RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
             authGroup.MapPost("/login", async Task<Results<Ok<LoginResponse>, BadRequest<object>, ProblemHttpResult>> (
                 [FromBody] LoginRequest request,

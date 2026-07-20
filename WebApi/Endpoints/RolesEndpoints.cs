@@ -1,6 +1,7 @@
 ﻿using Application.Exceptions;
-using Domain.Exceptions;
 using Application.UseCase.Roles;
+using Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using static Application.DTOs.RoleDtos;
@@ -12,7 +13,8 @@ namespace WebApi.Endpoints
         public static void MapRolesEndpoints(this IEndpointRouteBuilder app)
         {
             var group = app.MapGroup("/api/roles")
-                .WithTags("Roles");
+                .WithTags("Roles")
+                .RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
             group.MapGet("/{id:int}", async Task<Results<Ok<Response>, NotFound<object>, ProblemHttpResult>> (
                 int id,
@@ -37,7 +39,7 @@ namespace WebApi.Endpoints
             .WithName("GetRoleById")
             .WithSummary("Get a specific role by its unique identifier");
 
-            group.MapPost("/", async Task<Results<Created<Response>, BadRequest<object>, ProblemHttpResult>> ([FromBody] CreateRequest request,CreateRoleUseCase useCase) =>
+            group.MapPost("/", async Task<Results<Created<Response>, BadRequest<object>, ProblemHttpResult>> ([FromBody] CreateRequest request, CreateRoleUseCase useCase) =>
             {
                 try
                 {

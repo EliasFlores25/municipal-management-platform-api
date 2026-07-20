@@ -1,6 +1,7 @@
 ﻿using Application.Exceptions;
-using Domain.Exceptions;
 using Application.UseCases.DocumentTypes;
+using Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using static Application.DTOs.DocumentTypeDtos;
@@ -12,7 +13,8 @@ namespace WebApi.Endpoints
         public static void MapDocumentTypesEndpoints(this IEndpointRouteBuilder app)
         {
             var group = app.MapGroup("/api/document-types")
-                .WithTags("DocumentTypes");
+                .WithTags("DocumentTypes")
+                .RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador,Asistente Operativo" });
 
             group.MapGet("/{id:int}", async Task<Results<Ok<DocumentTypeResponse>, NotFound<object>, ProblemHttpResult>> (
                 int id,
